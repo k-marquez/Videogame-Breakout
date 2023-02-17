@@ -58,8 +58,12 @@ class PlayState(BaseState):
             if ball.collides(self.paddle):
                 settings.SOUNDS["paddle_hit"].stop()
                 settings.SOUNDS["paddle_hit"].play()
-                ball.rebound(self.paddle)
-                ball.push(self.paddle)
+                if self.paddle.sticky:
+                    ball.vx = 0
+                    ball.vy = 0
+                else:
+                    ball.rebound(self.paddle)
+                    ball.push(self.paddle)
 
             # Check collision with brickset
             if not ball.collides(self.brickset):
@@ -90,13 +94,25 @@ class PlayState(BaseState):
                 self.paddle.inc_size()
 
             # Chance to generate two more balls
-            if random.random() < 0.7:
+            if random.random() < 0.75:
                 r = brick.get_collision_rect()
                 self.powerups.append(
-                    self.powerups_abstract_factory.get_factory("TwoMoreBall").create(
+                    self.powerups_abstract_factory.get_factory("CatchBall").create(
                         r.centerx - 8, r.centery - 8
                     )
                 )
+                # if random.random() < 0.10:
+                #     self.powerups.append(
+                #         self.powerups_abstract_factory.get_factory("TwoMoreBall").create(
+                #             r.centerx - 8, r.centery - 8
+                #         )
+                #     )
+                # else:
+                #     self.powerups.append(
+                #         self.powerups_abstract_factory.get_factory("Tw").create(
+                #             r.centerx - 8, r.centery - 8
+                #         )
+                #     )
 
         # Removing all balls that are not in play
         self.balls = [ball for ball in self.balls if ball.in_play]

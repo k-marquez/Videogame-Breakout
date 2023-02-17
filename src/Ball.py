@@ -29,6 +29,7 @@ class Ball:
         self.texture = settings.TEXTURES["spritesheet"]
         self.frame = random.randint(0, 6)
         self.in_play = True
+        self.catch = False
 
     def get_collision_rect(self) -> pygame.Rect:
         return pygame.Rect(self.x, self.y, self.width, self.height)
@@ -125,3 +126,12 @@ class Ball:
             self.vx = -50 - 8 * d
         elif d < 0 and paddle.vx > 0 and pr.right < settings.VIRTUAL_HEIGHT:
             self.vx = 50 - 8 * d
+    
+    def catched(self) -> None:
+        """
+        Ball has catched for the paddle.
+        """
+        if not self.catch:
+            self.vx = 0
+            self.vy = 0
+            self.catch = True

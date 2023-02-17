@@ -59,8 +59,7 @@ class PlayState(BaseState):
                 settings.SOUNDS["paddle_hit"].stop()
                 settings.SOUNDS["paddle_hit"].play()
                 if self.paddle.sticky:
-                    ball.vx = 0
-                    ball.vy = 0
+                    ball.catched()
                 else:
                     ball.rebound(self.paddle)
                     ball.push(self.paddle)
@@ -113,6 +112,8 @@ class PlayState(BaseState):
                 #             r.centerx - 8, r.centery - 8
                 #         )
                 #     )
+        # Update list of balls that are catched
+        self.catched_balls = [ball for ball in self.balls if ball.catch]
 
         # Removing all balls that are not in play
         self.balls = [ball for ball in self.balls if ball.in_play]
@@ -204,13 +205,21 @@ class PlayState(BaseState):
         if input_id == "move_left":
             if input_data.pressed:
                 self.paddle.vx = -settings.PADDLE_SPEED
+                for ball in self.catched_balls:
+                    ball.vx = -settings.PADDLE_SPEED
             elif input_data.released and self.paddle.vx < 0:
                 self.paddle.vx = 0
+                for ball in self.catched_balls:
+                    ball.vx = 0
         elif input_id == "move_right":
             if input_data.pressed:
                 self.paddle.vx = settings.PADDLE_SPEED
+                for ball in self.catched_balls:
+                    ball.vx = settings.PADDLE_SPEED
             elif input_data.released and self.paddle.vx > 0:
                 self.paddle.vx = 0
+                for ball in self.catched_balls:
+                    ball.vx = 0
         elif input_id == "pause" and input_data.pressed:
             self.state_machine.change(
                 "pause",

@@ -41,6 +41,8 @@ class PlayState(BaseState):
             settings.SOUNDS["paddle_hit"].play()
 
         self.powerups_abstract_factory = AbstractFactory("src.powerups")
+        
+        self.catched_balls = params.get("catched_balls", [])
 
         InputHandler.register_listener(self)
 
@@ -50,17 +52,22 @@ class PlayState(BaseState):
     def update(self, dt: float) -> None:
         self.paddle.update(dt)
 
+        for ball in self.catched_balls:
+            ball.update(dt)
+            ball.solve_world_boundaries()
+
         for ball in self.balls:
             ball.update(dt)
             ball.solve_world_boundaries()
 
             # Check collision with the paddle
             if ball.collides(self.paddle):
-                settings.SOUNDS["paddle_hit"].stop()
-                settings.SOUNDS["paddle_hit"].play()
                 if self.paddle.sticky:
                     ball.catched()
+                    self.catched_balls.append(ball)
                 else:
+                    settings.SOUNDS["paddle_hit"].stop()
+                    settings.SOUNDS["paddle_hit"].play()
                     ball.rebound(self.paddle)
                     ball.push(self.paddle)
 
@@ -95,32 +102,25 @@ class PlayState(BaseState):
             # Chance to generate two more balls
             if random.random() < 0.75:
                 r = brick.get_collision_rect()
-                self.powerups.append(
-                    self.powerups_abstract_factory.get_factory("CatchBall").create(
-                        r.centerx - 8, r.centery - 8
+                if random.random() < 0.5:
+                    self.powerups.append(
+                        self.powerups_abstract_factory.get_factory("TwoMoreBall").create(
+                            r.centerx - 8, r.centery - 8
+                        )
                     )
-                )
-                # if random.random() < 0.10:
-                #     self.powerups.append(
-                #         self.powerups_abstract_factory.get_factory("TwoMoreBall").create(
-                #             r.centerx - 8, r.centery - 8
-                #         )
-                #     )
-                # else:
-                #     self.powerups.append(
-                #         self.powerups_abstract_factory.get_factory("Tw").create(
-                #             r.centerx - 8, r.centery - 8
-                #         )
-                #     )
-        # Update list of balls that are catched
-        self.catched_balls = [ball for ball in self.balls if ball.catch]
+                else:
+                    self.powerups.append(
+                        self.powerups_abstract_factory.get_factory("CatchBall").create(
+                            r.centerx - 8, r.centery - 8
+                        )
+                    )
 
         # Removing all balls that are not in play
-        self.balls = [ball for ball in self.balls if ball.in_play]
+        self.balls = [ball for ball in self.balls if (ball.in_play and not ball.catch)]
 
         self.brickset.update(dt)
 
-        if not self.balls:
+        if not (self.balls or self.catched_balls):
             self.lives -= 1
             if self.lives == 0:
                 self.state_machine.change("game_over", score=self.score)
@@ -194,6 +194,9 @@ class PlayState(BaseState):
         self.brickset.render(surface)
 
         self.paddle.render(surface)
+        
+        for ball in self.catched_balls:
+            ball.render(surface)
 
         for ball in self.balls:
             ball.render(surface)
@@ -228,6 +231,7 @@ class PlayState(BaseState):
                 lives=self.lives,
                 paddle=self.paddle,
                 balls=self.balls,
+                catched_balls = self.catched_balls,
                 brickset=self.brickset,
                 points_to_next_live=self.points_to_next_live,
                 live_factor=self.live_factor,

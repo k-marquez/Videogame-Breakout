@@ -25,6 +25,7 @@ class ServeState(BaseState):
         self.paddle.x = settings.VIRTUAL_WIDTH // 2 - 32
         self.paddle.y = settings.VIRTUAL_HEIGHT - 32
         self.ball = Ball(self.paddle.x + self.paddle.width // 2 - 4, self.paddle.y - 8)
+        self.catched_balls = []
         self.brickset = params.get("brickset", create_level(self.level))
         self.score = params.get("score", 0)
         self.lives = params.get("lives", 3)
@@ -103,6 +104,7 @@ class ServeState(BaseState):
                 lives=self.lives,
                 paddle=self.paddle,
                 balls=[self.ball],
+                catched_balls=self.catched_balls,
                 brickset=self.brickset,
                 points_to_next_live=self.points_to_next_live,
                 live_factor=self.live_factor,

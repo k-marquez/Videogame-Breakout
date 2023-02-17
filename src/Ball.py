@@ -143,3 +143,13 @@ class Ball:
             self.vy = 0
             self.y = settings.VIRTUAL_HEIGHT - 32 - self.width
             self.catch = True
+    
+    def release(self) -> None:
+        """
+        Release the catched Ball.
+        """
+        self.vx = random.randint(-80, 80)
+        self.vy = random.randint(-170, -100)
+        settings.SOUNDS["paddle_hit"].stop()
+        settings.SOUNDS["paddle_hit"].play()
+        self.catch = False

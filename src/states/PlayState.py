@@ -223,6 +223,12 @@ class PlayState(BaseState):
                 self.paddle.vx = 0
                 for ball in self.catched_balls:
                     ball.vx = 0
+        elif input_id == "enter":
+            if input_data.released:
+                for ball in self.catched_balls:
+                    ball.release()
+                    self.balls.append(ball)
+                self.catched_balls = []
         elif input_id == "pause" and input_data.pressed:
             self.state_machine.change(
                 "pause",

@@ -56,6 +56,7 @@ class PlayState(BaseState):
             if self.paddle.sticky:
                 ball.update(dt)
                 ball.solve_world_boundaries()
+                ball.vx = self.paddle.vx
             else:
                 ball.release()
                 self.balls.append(ball)
@@ -240,21 +241,13 @@ class PlayState(BaseState):
         if input_id == "move_left":
             if input_data.pressed:
                 self.paddle.vx = -settings.PADDLE_SPEED
-                for ball in self.catched_balls:
-                    ball.vx = -settings.PADDLE_SPEED
             elif input_data.released and self.paddle.vx < 0:
                 self.paddle.vx = 0
-                for ball in self.catched_balls:
-                    ball.vx = 0
         elif input_id == "move_right":
             if input_data.pressed:
                 self.paddle.vx = settings.PADDLE_SPEED
-                for ball in self.catched_balls:
-                    ball.vx = settings.PADDLE_SPEED
             elif input_data.released and self.paddle.vx > 0:
                 self.paddle.vx = 0
-                for ball in self.catched_balls:
-                    ball.vx = 0
         elif input_id == "enter":
             if input_data.released:
                 for ball in self.catched_balls:

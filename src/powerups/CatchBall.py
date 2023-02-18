@@ -24,7 +24,7 @@ class CatchBall(PowerUp):
 
     def __init__(self, x: int, y: int) -> None:
         super().__init__(x, y, 7)
-        self.lifetime = 800
+        self.lifetime = 500
         self.activate = False
 
     def take(self, play_state: TypeVar("PlayState")) -> None:
@@ -49,3 +49,4 @@ class CatchBall(PowerUp):
             self.activate = False
         else:
             self.lifetime -= 1
+            return self.lifetime

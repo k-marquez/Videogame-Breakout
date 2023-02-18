@@ -36,7 +36,8 @@ class PlayState(BaseState):
         self.powerups = params.get("powerups", [])
         self.catched_balls = params.get("catched_balls", [])
         self.activated_powerups = params.get("activated_powerups", {})
-
+        self.time = 0
+        self.paddle.sticky = False
         if not params.get("resume", False):
             self.balls[0].vx = random.randint(-80, 80)
             self.balls[0].vy = random.randint(-170, -100)
@@ -154,7 +155,7 @@ class PlayState(BaseState):
 
         # Update persist powerups
         for powerup in self.activated_powerups.values():
-            powerup.update_lifetime()
+            self.time = powerup.update_lifetime()
             if not powerup.is_active():
                 powerup.deactivate(self)
 
@@ -206,6 +207,15 @@ class PlayState(BaseState):
             5,
             (255, 255, 255),
         )
+        if self.paddle.sticky:
+            render_text(
+                surface,
+                f"Powerup: {self.time/100}",
+                settings.FONTS["tiny"],
+                settings.VIRTUAL_WIDTH - 200,
+                5,
+                (255, 255, 255),
+            )
 
         self.brickset.render(surface)
 

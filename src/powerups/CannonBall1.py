@@ -64,10 +64,10 @@ class CannonBall1(PowerUp):
         surface.blit(
             self.texture_cannons,
             (play_state.paddle.x - 25, play_state.paddle.y - 10),
-            self.frames_cannons[0]
+            self.frames_cannons[11]
         )
         surface.blit(
             self.texture_cannons,
             (play_state.paddle.x + play_state.paddle.width - 8, play_state.paddle.y - 10),
-            self.frames_cannons[0]
+            self.frames_cannons[11]
         )

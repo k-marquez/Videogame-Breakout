@@ -100,7 +100,10 @@ class PlayState(BaseState):
 
             if brick is None:
                 continue
-
+            else:
+                if ball.vx == 0 and ball.vy == -250:
+                    if ball.collides(brick):
+                        ball.in_play = False
             brick.hit()
             self.score += brick.score()
             if ball.vx != 0 and ball.vy != -256:
@@ -139,14 +142,14 @@ class PlayState(BaseState):
                         )
                     )
                 # Chance to generate a pair of cannons
-                elif random.random() < 0.80 and not self.find_activated_powerups("CatchBall"):
+                elif random.random() < 0.80 and not self.find_activated_powerups("CatchBall") and not self.find_activated_powerups("CannonBall2"):
                     self.powerups.append(
                         self.powerups_abstract_factory.get_factory("CannonBall1").create(
                             r.centerx - 8, r.centery - 8
                         )
                     )
                 # Chance to generate a pair of cannons
-                elif random.random() < 0.0 and not self.find_activated_powerups("CatchBall"):
+                elif random.random() < 0.80 and not self.find_activated_powerups("CatchBall") and not self.find_activated_powerups("CannonBall1"):
                     self.powerups.append(
                         self.powerups_abstract_factory.get_factory("CannonBall2").create(
                             r.centerx - 8, r.centery - 8
@@ -192,6 +195,8 @@ class PlayState(BaseState):
                     self.activated_powerups["CatchBall"] = powerup
                 if type(powerup).__name__ == "CannonBall1":
                     self.activated_powerups["CannonBall1"] = powerup
+                if type(powerup).__name__ == "CannonBall2":
+                    self.activated_powerups["CannonBall2"] = powerup
 
         # Update persist powerups
         for powerup in self.activated_powerups.values():
@@ -261,6 +266,8 @@ class PlayState(BaseState):
 
         for powerup in self.activated_powerups.values():
             if type(powerup).__name__ == "CannonBall1":
+                powerup.render_powerup(surface, self)
+            if type(powerup).__name__ == "CannonBall2":
                 powerup.render_powerup(surface, self)
 
         self.paddle.render(surface)

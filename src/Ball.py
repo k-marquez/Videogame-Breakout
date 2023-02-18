@@ -54,7 +54,7 @@ class Ball:
             self.x = settings.VIRTUAL_WIDTH - self.width
             self.vx *= -1
         elif r.top < 0:
-            if(self.vx == 0 and self.vy == -256):
+            if(self.vx == 0 and self.vy == -256 or self.vy == -250):
                 self.in_play = False
             else:
                 settings.SOUNDS["wall_hit"].stop()

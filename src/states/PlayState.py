@@ -41,9 +41,11 @@ class PlayState(BaseState):
         )
         self.powerups = params.get("powerups", [])
         self.catched_balls = params.get("catched_balls", [])
+        self.projectiles = params.get("projectiles", [])
         self.activated_powerups = params.get("activated_powerups", {})
         self.time = 0
         self.paddle.sticky = False
+        self.paddle.cannon = False
         if not params.get("resume", False):
             self.balls[0].vx = random.randint(-80, 80)
             self.balls[0].vy = random.randint(-170, -100)
@@ -67,6 +69,13 @@ class PlayState(BaseState):
                 ball.release()
                 self.balls.append(ball)
                 self.catched_balls.remove(ball)
+        
+        for ball in self.projectiles:
+            if self.paddle.cannon:
+                if(self.projectiles.index(ball) % 2 == 0):
+                    ball.x = self.paddle.x + self.paddle.width
+                else:
+                    ball.x = self.paddle.x - 10
 
         for ball in self.balls:
             ball.update(dt)
@@ -115,28 +124,35 @@ class PlayState(BaseState):
             if random.random() < 0.75:
                 r = brick.get_collision_rect()
                 # Chance to generate two more balls
-                if random.random() < 0.1:
+                if random.random() < 0.0:
                     self.powerups.append(
                         self.powerups_abstract_factory.get_factory("TwoMoreBall").create(
                             r.centerx - 8, r.centery - 8
                         )
                     )
                 # Chance to generate a sticky paddle
-                elif random.random() < 0.2 and not self.find_activated_powerups("CatchBall"):
+                elif random.random() < 0.0 and not self.find_activated_powerups("CatchBall"):
                     self.powerups.append(
                         self.powerups_abstract_factory.get_factory("CatchBall").create(
                             r.centerx - 8, r.centery - 8
                         )
                     )
                 # Chance to generate a pair of cannons
-                elif random.random() < 0.1 and not self.find_activated_powerups("CatchBall"):
+                elif random.random() < 0.0 and not self.find_activated_powerups("CatchBall"):
                     self.powerups.append(
                         self.powerups_abstract_factory.get_factory("CannonBall").create(
                             r.centerx - 8, r.centery - 8
                         )
                     )
+                # Chance to generate a pair of cannons
+                elif random.random() < 0.85 and not self.find_activated_powerups("CatchBall"):
+                    self.powerups.append(
+                        self.powerups_abstract_factory.get_factory("CannonBall2").create(
+                            r.centerx - 8, r.centery - 8
+                        )
+                    )
                 # Chance to generate a confetti
-                elif random.random() < 0.5 and not self.find_activated_powerups("CatchBall"):
+                elif random.random() < 0.0 and not self.find_activated_powerups("CatchBall"):
                     self.powerups.append(
                         self.powerups_abstract_factory.get_factory("ConfettiBall").create(
                             r.centerx - 8, r.centery - 8
@@ -274,6 +290,11 @@ class PlayState(BaseState):
                     ball.release()
                     self.balls.append(ball)
                 self.catched_balls = []
+        elif input_id == "f":
+            if input_data.pressed and self.paddle.cannon:
+                for ball in self.projectiles:
+                    self.balls.append(ball)
+                self.projectiles = []
         elif input_id == "pause" and input_data.pressed:
             self.state_machine.change(
                 "pause",

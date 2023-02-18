@@ -42,6 +42,7 @@ class CatchBall(PowerUp):
     def deactivate(self, play_state: TypeVar("PlayState")) -> None:
         play_state.paddle.sticky = False
         settings.SOUNDS["selected"].play()
+        self.in_play = True
 
     def update_lifetime(self) -> None:
         if self.lifetime < 0:

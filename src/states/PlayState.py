@@ -51,10 +51,14 @@ class PlayState(BaseState):
 
     def update(self, dt: float) -> None:
         self.paddle.update(dt)
-
         for ball in self.catched_balls:
-            ball.update(dt)
-            ball.solve_world_boundaries()
+            if self.paddle.sticky:
+                ball.update(dt)
+                ball.solve_world_boundaries()
+            else:
+                ball.release()
+                self.balls.append(ball)
+                self.catched_balls.remove(ball)
 
         for ball in self.balls:
             ball.update(dt)
@@ -146,7 +150,7 @@ class PlayState(BaseState):
             if powerup.collides(self.paddle):
                 powerup.take(self)
                 if type(powerup).__name__ == "CatchBall":
-                    self.activated_powerups["CatchBall"] = powerup;
+                    self.activated_powerups["CatchBall"] = powerup
 
         # Update persist powerups
         for powerup in self.activated_powerups.values():

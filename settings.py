@@ -33,7 +33,7 @@ input_handler.InputHandler.set_keyboard_action(input_handler.KEY_SPACE, "pause")
 
 # Size of our actual window
 WINDOW_WIDTH = 1024
-WINDOW_HEIGHT = 600
+WINDOW_HEIGHT = 550
 
 # Size we are trying to emulate
 VIRTUAL_WIDTH = 432

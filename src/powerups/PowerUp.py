@@ -5,6 +5,9 @@ Study Case: Breakout
 Author: Alejandro Mujica
 alejandro.j.mujic4@gmail.com
 
+Author: Kevin Márquez
+marquezberriosk@gmail.com
+
 This file contains the base class PowerUp as an abstract class.
 """
 from typing import TypeVar, Any

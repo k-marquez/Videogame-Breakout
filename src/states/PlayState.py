@@ -34,6 +34,8 @@ class PlayState(BaseState):
             + settings.PADDLE_GROW_UP_POINTS * (self.paddle.size + 1) * self.level
         )
         self.powerups = params.get("powerups", [])
+        self.catched_balls = params.get("catched_balls", [])
+        self.activated_powerups = params.get("activated_powerups", {})
 
         if not params.get("resume", False):
             self.balls[0].vx = random.randint(-80, 80)
@@ -41,8 +43,6 @@ class PlayState(BaseState):
             settings.SOUNDS["paddle_hit"].play()
 
         self.powerups_abstract_factory = AbstractFactory("src.powerups")
-        
-        self.catched_balls = params.get("catched_balls", [])
 
         InputHandler.register_listener(self)
 
@@ -99,16 +99,18 @@ class PlayState(BaseState):
                 )
                 self.paddle.inc_size()
 
-            # Chance to generate two more balls
+            # Change to generate a powerup
             if random.random() < 0.75:
                 r = brick.get_collision_rect()
-                if random.random() < 0.5:
+                # Chance to generate two more balls
+                if random.random() < 0.1:
                     self.powerups.append(
                         self.powerups_abstract_factory.get_factory("TwoMoreBall").create(
                             r.centerx - 8, r.centery - 8
                         )
                     )
-                else:
+                # Chance to generate a sticky paddle
+                elif random.random() < 0.5 and not self.find_activated_powerups("CatchBall"):
                     self.powerups.append(
                         self.powerups_abstract_factory.get_factory("CatchBall").create(
                             r.centerx - 8, r.centery - 8
@@ -143,10 +145,20 @@ class PlayState(BaseState):
 
             if powerup.collides(self.paddle):
                 powerup.take(self)
+                if type(powerup).__name__ == "CatchBall":
+                    self.activated_powerups["CatchBall"] = powerup;
+
+        # Update persist powerups
+        for powerup in self.activated_powerups.values():
+            powerup.update_lifetime()
+            if not powerup.is_active():
+                powerup.deactivate(self)
 
         # Remove powerups that are not in play
         self.powerups = [p for p in self.powerups if p.in_play]
 
+        # Remove persist powerups that are not actives
+        self.activated_powerups = dict([p for p in self.activated_powerups.items() if p[1].is_active()])
         # Check victory
         if self.brickset.size == 1 and next(
             (True for _, b in self.brickset.bricks.items() if b.broken), False
@@ -204,6 +216,12 @@ class PlayState(BaseState):
         for powerup in self.powerups:
             powerup.render(surface)
 
+    def find_activated_powerups(self, name: str) -> bool:
+        if name in self.activated_powerups:
+            return True
+
+        return False
+    
     def on_input(self, input_id: str, input_data: InputData) -> None:
         if input_id == "move_left":
             if input_data.pressed:

@@ -24,6 +24,8 @@ class CatchBall(PowerUp):
 
     def __init__(self, x: int, y: int) -> None:
         super().__init__(x, y, 7)
+        self.lifetime = 800
+        self.activate = False
 
     def take(self, play_state: TypeVar("PlayState")) -> None:
         play_state.paddle.sticky = True
@@ -31,4 +33,18 @@ class CatchBall(PowerUp):
         settings.SOUNDS["paddle_hit"].stop()
         settings.SOUNDS["paddle_hit"].play()
 
+        self.activate = True
         self.in_play = False
+
+    def is_active(self) -> bool:
+        return self.activate
+    
+    def deactivate(self, play_state: TypeVar("PlayState")) -> None:
+        play_state.paddle.sticky = False
+        settings.SOUNDS["selected"].play()
+
+    def update_lifetime(self) -> None:
+        if self.lifetime < 0:
+            self.activate = False
+        else:
+            self.lifetime -= 1

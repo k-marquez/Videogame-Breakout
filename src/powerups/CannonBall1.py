@@ -29,7 +29,7 @@ class CannonBall1(PowerUp):
     def __init__(self, x: int, y: int) -> None:
         super().__init__(x, y, 6)
         self.activate = False
-        self.lifetime = 800
+        self.shoots = 1
         self.ball_factory = Factory(Ball)
         self.texture_cannons = settings.TEXTURES["cannons"]
         self.frames_cannons = settings.FRAMES["cannons"]
@@ -48,17 +48,20 @@ class CannonBall1(PowerUp):
     def is_active(self) -> bool:
         return self.activate
     
+    def shoot(self) -> None:
+        if self.shoots > 0:
+            self.shoots -= 1
+        else:
+            self.activate = False
+
+    
     def deactivate(self, play_state: TypeVar("PlayState")) -> None:
         play_state.paddle.cannon = False
         self.activate = False
         self.in_play = True
 
     def update_lifetime(self) -> None:
-        if self.lifetime < 0:
-            self.activate = False
-        else:
-            self.lifetime -= 1
-            return self.lifetime
+        return self.shoots
     
     def render_powerup(self, surface: pygame.Surface, play_state: TypeVar("PlayState")) -> None:
         surface.blit(

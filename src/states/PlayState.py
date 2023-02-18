@@ -139,14 +139,14 @@ class PlayState(BaseState):
                         )
                     )
                 # Chance to generate a pair of cannons
-                elif random.random() < 0.80 and not self.find_activated_powerups("CatchBall"):
+                elif random.random() < 0.80 and not self.find_activated_powerups("CannonBall1"):
                     self.powerups.append(
                         self.powerups_abstract_factory.get_factory("CannonBall1").create(
                             r.centerx - 8, r.centery - 8
                         )
                     )
                 # Chance to generate a pair of cannons
-                elif random.random() < 0.0 and not self.find_activated_powerups("CatchBall"):
+                elif random.random() < 0.0 and not self.find_activated_powerups("CannonBall2"):
                     self.powerups.append(
                         self.powerups_abstract_factory.get_factory("CannonBall2").create(
                             r.centerx - 8, r.centery - 8
@@ -256,11 +256,20 @@ class PlayState(BaseState):
                 5,
                 (255, 255, 255),
             )
+        if self.paddle.cannon:
+            render_text(
+                surface,
+                f"Shoots: {self.time}",
+                settings.FONTS["tiny"],
+                settings.VIRTUAL_WIDTH - 300,
+                5,
+                (255, 255, 255),
+            )
 
         self.brickset.render(surface)
 
         for powerup in self.activated_powerups.values():
-            if type(powerup).__name__ == "CannonBall1":
+            if type(powerup).__name__ != "CatchBall":
                 powerup.render_powerup(surface, self)
 
         self.paddle.render(surface)
@@ -298,6 +307,13 @@ class PlayState(BaseState):
                     self.balls.append(ball)
                 self.catched_balls = []
         elif input_id == "f":
+            if self.activated_powerups.get("CannonBall1"):
+                self.activated_powerups["CannonBall1"].shoot()
+            elif self.activated_powerups.get("CannonBall2"):
+                self.activated_powerups["CannonBall2"].shoot()
+            elif self.activated_powerups.get("CannonBall3"):
+                self.activated_powerups["CannonBall3"].shoot()
+
             if input_data.pressed and self.paddle.cannon:
                 for ball in self.projectiles:
                     self.balls.append(ball)
@@ -316,4 +332,5 @@ class PlayState(BaseState):
                 live_factor=self.live_factor,
                 powerups=self.powerups,
                 activated_powerups=self.activated_powerups,
+                projectiles = self.projectiles,
             )

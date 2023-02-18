@@ -73,9 +73,9 @@ class PlayState(BaseState):
         for ball in self.projectiles:
             if self.paddle.cannon:
                 if(self.projectiles.index(ball) % 2 == 0):
-                    ball.x = self.paddle.x + self.paddle.width
+                    ball.x = self.paddle.x + self.paddle.width + 3
                 else:
-                    ball.x = self.paddle.x - 10
+                    ball.x = self.paddle.x - 14
 
         for ball in self.balls:
             ball.update(dt)
@@ -139,7 +139,7 @@ class PlayState(BaseState):
                         )
                     )
                 # Chance to generate a pair of cannons
-                elif random.random() < 0.0 and not self.find_activated_powerups("CatchBall"):
+                elif random.random() < 0.80 and not self.find_activated_powerups("CatchBall"):
                     self.powerups.append(
                         self.powerups_abstract_factory.get_factory("CannonBall1").create(
                             r.centerx - 8, r.centery - 8
@@ -153,7 +153,7 @@ class PlayState(BaseState):
                         )
                     )
                 # Chance to generate a confetti
-                elif random.random() < 0.1 and not self.find_activated_powerups("ConfettiBall"):
+                elif random.random() < 0.0 and not self.find_activated_powerups("ConfettiBall"):
                     self.powerups.append(
                         self.powerups_abstract_factory.get_factory("ConfettiBall").create(
                             r.centerx - 8, r.centery - 8
@@ -190,8 +190,8 @@ class PlayState(BaseState):
                 powerup.take(self)
                 if type(powerup).__name__ == "CatchBall":
                     self.activated_powerups["CatchBall"] = powerup
-                if type(powerup).__name__ == "CannonBall":
-                    self.activated_powerups["CannonBall"] = powerup
+                if type(powerup).__name__ == "CannonBall1":
+                    self.activated_powerups["CannonBall1"] = powerup
 
         # Update persist powerups
         for powerup in self.activated_powerups.values():
@@ -260,7 +260,7 @@ class PlayState(BaseState):
         self.brickset.render(surface)
 
         for powerup in self.activated_powerups.values():
-            if type(powerup).__name__ == "CannonBall":
+            if type(powerup).__name__ == "CannonBall1":
                 powerup.render_powerup(surface, self)
 
         self.paddle.render(surface)

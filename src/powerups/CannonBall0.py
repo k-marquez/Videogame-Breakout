@@ -21,7 +21,6 @@ import pygame
 import settings
 from src.powerups.PowerUp import PowerUp
 
-
 class CannonBall(PowerUp):
     """
     Power-up to add two barrels on each side of the racket.

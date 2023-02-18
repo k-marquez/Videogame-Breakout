@@ -16,30 +16,34 @@ This file contains the specialization of PowerUp to add a cannon and one shot un
 from typing import TypeVar
 
 from gale.factory import Factory
-
+import pygame
 import settings
 from src.Ball import Ball
 from src.powerups.PowerUp import PowerUp
 
 class CannonBall1(PowerUp):
     """
-    Power-up to add a cannon to the game.
+    Power-up to add two barrels on each side of the racket.
     """
 
     def __init__(self, x: int, y: int) -> None:
         super().__init__(x, y, 6)
         self.activate = False
+        self.lifetime = 800
         self.ball_factory = Factory(Ball)
+        self.texture_cannons = settings.TEXTURES["cannons"]
+        self.frames_cannons = settings.FRAMES["cannons"]
 
     def take(self, play_state: TypeVar("PlayState")) -> None:
         paddle = play_state.paddle
         paddle.cannon = True
+        self.activate = True
+        self.in_play = False
         for _ in range(2):
             b = self.ball_factory.create(paddle.x, paddle.y - 8)
             b.vx = 0
             b.vy = -256
             play_state.projectiles.append(b)
-        self.in_play = False
 
     def is_active(self) -> bool:
         return self.activate
@@ -48,3 +52,22 @@ class CannonBall1(PowerUp):
         play_state.paddle.cannon = False
         self.activate = False
         self.in_play = True
+
+    def update_lifetime(self) -> None:
+        if self.lifetime < 0:
+            self.activate = False
+        else:
+            self.lifetime -= 1
+            return self.lifetime
+    
+    def render_powerup(self, surface: pygame.Surface, play_state: TypeVar("PlayState")) -> None:
+        surface.blit(
+            self.texture_cannons,
+            (play_state.paddle.x - 25, play_state.paddle.y - 10),
+            self.frames_cannons[0]
+        )
+        surface.blit(
+            self.texture_cannons,
+            (play_state.paddle.x + play_state.paddle.width - 8, play_state.paddle.y - 10),
+            self.frames_cannons[0]
+        )

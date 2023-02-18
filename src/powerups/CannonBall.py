@@ -16,32 +16,51 @@ This file contains the specialization of PowerUp to add two more ball to the gam
 import random
 from typing import TypeVar
 
-from gale.factory import Factory
+import pygame
 
 import settings
-from src.Ball import Ball
 from src.powerups.PowerUp import PowerUp
 
 
 class CannonBall(PowerUp):
     """
-    Power-up to add two more ball to the game.
+    Power-up to add two barrels on each side of the racket.
     """
 
     def __init__(self, x: int, y: int) -> None:
-        super().__init__(x, y, 6)
-        self.ball_factory = Factory(Ball)
+        super().__init__(x, y, 2)
+        self.activate = False
+        self.lifetime = 800
+        self.texture_cannons = settings.TEXTURES["cannons"]
+        self.frames_cannons = settings.FRAMES["cannons"]
 
     def take(self, play_state: TypeVar("PlayState")) -> None:
-        paddle = play_state.paddle
-
-        for _ in range(1):
-            b = self.ball_factory.create(paddle.x + paddle.width // 2 - 4, paddle.y - 8)
-            settings.SOUNDS["paddle_hit"].stop()
-            settings.SOUNDS["paddle_hit"].play()
-
-            b.vx = random.randint(-80, 80)
-            b.vy = random.randint(-170, -100)
-            play_state.balls.append(b)
-
+        settings.SOUNDS["selected"].play()
+        self.activate = True
         self.in_play = False
+    
+    def is_active(self) -> bool:
+        return self.activate
+
+    def deactivate(self, play_state: TypeVar("PlayState")) -> None:
+        settings.SOUNDS["selected"].play()
+        self.in_play = True
+
+    def update_lifetime(self) -> None:
+        if self.lifetime < 0:
+            self.activate = False
+        else:
+            self.lifetime -= 1
+            return self.lifetime
+
+    def render_powerup(self, surface: pygame.Surface, play_state: TypeVar("PlayState")) -> None:
+        surface.blit(
+            self.texture_cannons,
+            (play_state.paddle.x - 25, play_state.paddle.y - 10),
+            self.frames_cannons[0]
+        )
+        surface.blit(
+            self.texture_cannons,
+            (play_state.paddle.x + play_state.paddle.width - 8, play_state.paddle.y - 10),
+            self.frames_cannons[0]
+        )

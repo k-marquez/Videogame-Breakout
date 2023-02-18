@@ -129,14 +129,14 @@ class PlayState(BaseState):
                         )
                     )
                 # Chance to generate a pair of cannons
-                elif random.random() < 0.1 and not self.find_activated_powerups("CatchBall"):
+                elif random.random() < 0.5 and not self.find_activated_powerups("CannonBall"):
                     self.powerups.append(
                         self.powerups_abstract_factory.get_factory("CannonBall").create(
                             r.centerx - 8, r.centery - 8
                         )
                     )
                 # Chance to generate a confetti
-                elif random.random() < 0.5 and not self.find_activated_powerups("CatchBall"):
+                elif random.random() < 0.1 and not self.find_activated_powerups("ConfettiBall"):
                     self.powerups.append(
                         self.powerups_abstract_factory.get_factory("ConfettiBall").create(
                             r.centerx - 8, r.centery - 8
@@ -164,7 +164,7 @@ class PlayState(BaseState):
                     points_to_next_live=self.points_to_next_live,
                     live_factor=self.live_factor,
                 )
-
+        
         # Update powerups
         for powerup in self.powerups:
             powerup.update(dt)
@@ -173,6 +173,8 @@ class PlayState(BaseState):
                 powerup.take(self)
                 if type(powerup).__name__ == "CatchBall":
                     self.activated_powerups["CatchBall"] = powerup
+                if type(powerup).__name__ == "CannonBall":
+                    self.activated_powerups["CannonBall"] = powerup
 
         # Update persist powerups
         for powerup in self.activated_powerups.values():
@@ -240,6 +242,10 @@ class PlayState(BaseState):
 
         self.brickset.render(surface)
 
+        for powerup in self.activated_powerups.values():
+            if type(powerup).__name__ == "CannonBall":
+                powerup.render_powerup(surface, self)
+
         self.paddle.render(surface)
         
         for ball in self.catched_balls:
@@ -287,4 +293,5 @@ class PlayState(BaseState):
                 points_to_next_live=self.points_to_next_live,
                 live_factor=self.live_factor,
                 powerups=self.powerups,
+                activated_powerups=self.activated_powerups,
             )

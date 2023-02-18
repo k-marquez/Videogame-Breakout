@@ -5,6 +5,9 @@ Study Case: Breakout
 Author: Alejandro Mujica
 alejandro.j.mujic4@gmail.com
 
+Author: Lewis Ochoa
+lewis8a@gmail.com
+
 This file contains the game settings that include the association of the
 inputs with an their ids, constants of values to set up the game, sounds,
 textures, frames, and fonts.

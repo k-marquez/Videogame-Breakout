@@ -5,6 +5,9 @@ Study Case: Breakout
 Author: Kevin Márquez
 marquezberriosk@gmail.com
 
+Author: Lewis Ochoa
+lewis8a@gmail.com
+
 This file contains the specialization of PowerUp to take the ball with de paddle.
 """
 import random

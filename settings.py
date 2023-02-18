@@ -83,7 +83,7 @@ FRAMES = {
     "hearts": generate_frames(TEXTURES["hearts"], 10, 9),
     "arrows": generate_frames(TEXTURES["arrows"], 24, 24),
     "powerups": generate_powerups_frames(),
-    "cannons": generate_frames(TEXTURES["cannons"], 64, 64),
+    "cannons": generate_frames(TEXTURES["cannons"], 32, 32),
 }
 
 pygame.font.init()

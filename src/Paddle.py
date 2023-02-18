@@ -27,7 +27,7 @@ class Paddle:
 
         self.texture = settings.TEXTURES["spritesheet"]
         self.frames = settings.FRAMES["paddles"]
-
+        
         # The paddle only move horizontally
         self.vx = 0
 

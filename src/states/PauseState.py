@@ -19,6 +19,7 @@ class PauseState(BaseState):
         self.points_to_next_live = params["points_to_next_live"]
         self.powerups = params["powerups"]
         self.catched_balls = params["catched_balls"]
+        self.projectiles = params["projectiles"]
         self.activated_powerups = params["activated_powerups"]
         settings.SOUNDS["pause"].play()
         InputHandler.register_listener(self)
@@ -82,6 +83,7 @@ class PauseState(BaseState):
                 live_factor=self.live_factor,
                 powerups=self.powerups,
                 catched_balls=self.catched_balls,
+                projectiles=self.projectiles,
                 activated_powerups = self.activated_powerups,
                 resume=True,
             )

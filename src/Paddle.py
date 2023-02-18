@@ -34,6 +34,9 @@ class Paddle:
         # Hability to catch balls
         self.sticky = False
 
+        # Hability to cannon
+        self.cannon = False
+
     def resize(self, size: int) -> None:
         self.size = size
         self.width = (self.size + 1) * 32

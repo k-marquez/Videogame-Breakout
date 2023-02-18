@@ -5,6 +5,12 @@ Study Case: Breakout
 Author: Alejandro Mujica
 alejandro.j.mujic4@gmail.com
 
+Author: Kevin Márquez
+marquezberriosk@gmail.com
+
+Author: Lewis Ochoa
+lewis8a@gmail.com
+
 This file contains the class to define the Play state.
 """
 import random
@@ -116,9 +122,23 @@ class PlayState(BaseState):
                         )
                     )
                 # Chance to generate a sticky paddle
-                elif random.random() < 0.5 and not self.find_activated_powerups("CatchBall"):
+                elif random.random() < 0.2 and not self.find_activated_powerups("CatchBall"):
                     self.powerups.append(
                         self.powerups_abstract_factory.get_factory("CatchBall").create(
+                            r.centerx - 8, r.centery - 8
+                        )
+                    )
+                # Chance to generate a pair of cannons
+                elif random.random() < 0.1 and not self.find_activated_powerups("CatchBall"):
+                    self.powerups.append(
+                        self.powerups_abstract_factory.get_factory("CannonBall").create(
+                            r.centerx - 8, r.centery - 8
+                        )
+                    )
+                # Chance to generate a confetti
+                elif random.random() < 0.5 and not self.find_activated_powerups("CatchBall"):
+                    self.powerups.append(
+                        self.powerups_abstract_factory.get_factory("ConfettiBall").create(
                             r.centerx - 8, r.centery - 8
                         )
                     )

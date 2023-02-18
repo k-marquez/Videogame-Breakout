@@ -103,7 +103,8 @@ class PlayState(BaseState):
 
             brick.hit()
             self.score += brick.score()
-            ball.rebound(brick)
+            if ball.vx != 0 and ball.vy != -256:
+                ball.rebound(brick)
 
             # Check earn life
             if self.score >= self.points_to_next_live:
@@ -138,14 +139,14 @@ class PlayState(BaseState):
                         )
                     )
                 # Chance to generate a pair of cannons
-                elif random.random() < 0.0 and not self.find_activated_powerups("CatchBall"):
+                elif random.random() < 0.85 and not self.find_activated_powerups("CatchBall"):
                     self.powerups.append(
-                        self.powerups_abstract_factory.get_factory("CannonBall").create(
+                        self.powerups_abstract_factory.get_factory("CannonBall1").create(
                             r.centerx - 8, r.centery - 8
                         )
                     )
                 # Chance to generate a pair of cannons
-                elif random.random() < 0.85 and not self.find_activated_powerups("CatchBall"):
+                elif random.random() < 0.0 and not self.find_activated_powerups("CatchBall"):
                     self.powerups.append(
                         self.powerups_abstract_factory.get_factory("CannonBall2").create(
                             r.centerx - 8, r.centery - 8

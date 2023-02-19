@@ -38,22 +38,21 @@ class CannonBall2(PowerUp):
         paddle = play_state.paddle
         paddle.cannon = True
         self.activate = True
+        self.projectiles = []
         self.in_play = False
-        for _ in range(2):
-            b = self.ball_factory.create(paddle.x, paddle.y - 8)
-            b.vx = 0
-            b.vy = -250
-            b.proyectile = True
-            play_state.projectiles.append(b)
     
-    def recharge(self, play_state: TypeVar("PlayState")) -> None:
+    def shoot(self, play_state: TypeVar("PlayState")) -> None:
         for _ in range(2):
             b = self.ball_factory.create(play_state.paddle.x, play_state.paddle.y - 8)
             b.vx = 0
             b.vy = -250
             b.proyectile = True
-            print(f"recargando bala: {b.vy}")
-            play_state.projectiles.append(b)
+            self.projectiles.append(b)
+            
+        self.projectiles[0].x = play_state.paddle.x + play_state.paddle.width + 3
+        self.projectiles[1].x = play_state.paddle.x - 14
+        play_state.balls.extend(self.projectiles)
+        self.projectiles = []
 
     def is_active(self) -> bool:
         return self.activate

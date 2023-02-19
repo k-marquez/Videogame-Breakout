@@ -68,15 +68,8 @@ class PlayState(BaseState):
             else:
                 ball.release()
                 self.balls.append(ball)
-                self.catched_balls.remove(ball)
+                self.catched_balls.remove(ball)                
         
-        for ball in self.projectiles:
-            if self.paddle.cannon:
-                if(self.projectiles.index(ball) % 2 == 0):
-                    ball.x = self.paddle.x + self.paddle.width + 3
-                else:
-                    ball.x = self.paddle.x - 14
-
         for ball in self.balls:
             ball.update(dt)
             ball.solve_world_boundaries()
@@ -92,10 +85,11 @@ class PlayState(BaseState):
                     ball.rebound(self.paddle)
                     ball.push(self.paddle)
 
+
             # Check collision with brickset
             if not ball.collides(self.brickset):
                 continue
-
+            
             brick = self.brickset.get_colliding_brick(ball.get_collision_rect())
 
             if brick is None:
@@ -150,7 +144,7 @@ class PlayState(BaseState):
                         )
                     )
                 # Chance to generate a pair of cannons
-                elif random.random() < 0.0 and not self.find_activated_powerups(list_names) and not self.find_activated_powerups("CannonBall1"):
+                elif random.random() < 0.5 and not self.find_activated_powerups(list_names) and not self.find_activated_powerups("CannonBall1"):
                     self.powerups.append(
                         self.powerups_abstract_factory.get_factory("CannonBall2").create(
                             r.centerx - 8, r.centery - 8
@@ -165,7 +159,7 @@ class PlayState(BaseState):
                     )
                 
                 # Chance to generate a lose live
-                elif random.random() < 0.80 and not self.find_activated_powerups(["LoseLive"]):
+                elif random.random() < 0.01 and not self.find_activated_powerups(["LoseLive"]):
                     self.powerups.append(
                         self.powerups_abstract_factory.get_factory("LoseLife").create(
                             r.centerx - 8, r.centery - 8
@@ -340,15 +334,13 @@ class PlayState(BaseState):
                 self.activated_powerups["CannonBall1"].shoot()
             elif self.activated_powerups.get("CannonBall2"):
                 proyectiles = [b for b in self.balls if b.proyectile]
-                if(len(proyectiles) == 0):
-                    self.activated_powerups["CannonBall2"].recharge(self)    
+                if input_data.pressed and self.paddle.cannon:
+                    if(len(proyectiles) == 0):
+                        self.activated_powerups["CannonBall2"].shoot(self)    
             elif self.activated_powerups.get("CannonBall3"):
                 self.activated_powerups["CannonBall3"].shoot()
 
-            if input_data.pressed and self.paddle.cannon:
-                for ball in self.projectiles:
-                    self.balls.append(ball)
-                self.projectiles = []
+                
         elif input_id == "pause" and input_data.pressed:
             self.state_machine.change(
                 "pause",

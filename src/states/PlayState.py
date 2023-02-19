@@ -137,16 +137,23 @@ class PlayState(BaseState):
                         )
                     )
                 # Chance to generate a pair of cannons
-                elif random.random() < 0.0 and not self.find_activated_powerups(list_names) and not self.find_activated_powerups("CannonBall2"):
+                elif random.random() < 0.0 and not self.find_activated_powerups(list_names) and not self.find_activated_powerups("CannonBall2") and not self.find_activated_powerups("CannonBall3"):
                     self.powerups.append(
                         self.powerups_abstract_factory.get_factory("CannonBall1").create(
                             r.centerx - 8, r.centery - 8
                         )
                     )
                 # Chance to generate a pair of cannons
-                elif random.random() < 0.5 and not self.find_activated_powerups(list_names) and not self.find_activated_powerups("CannonBall1"):
+                elif random.random() < 0.0 and not self.find_activated_powerups(list_names) and not self.find_activated_powerups("CannonBall1") and not self.find_activated_powerups("CannonBall3"):
                     self.powerups.append(
                         self.powerups_abstract_factory.get_factory("CannonBall2").create(
+                            r.centerx - 8, r.centery - 8
+                        )
+                    )
+                # Chance to generate a pair of cannons
+                elif random.random() < 0.5 and not self.find_activated_powerups(list_names) and not self.find_activated_powerups("CannonBall1") and not self.find_activated_powerups("CannonBall2"):
+                    self.powerups.append(
+                        self.powerups_abstract_factory.get_factory("CannonBall3").create(
                             r.centerx - 8, r.centery - 8
                         )
                     )
@@ -200,6 +207,8 @@ class PlayState(BaseState):
                     self.activated_powerups["CannonBall1"] = powerup
                 if type(powerup).__name__ == "CannonBall2":
                     self.activated_powerups["CannonBall2"] = powerup
+                if type(powerup).__name__ == "CannonBall3":
+                    self.activated_powerups["CannonBall3"] = powerup
                 if type(powerup).__name__ == "LoseLife":
                     self.lives -= 1
                     if self.lives == 0:
@@ -338,7 +347,10 @@ class PlayState(BaseState):
                     if(len(proyectiles) == 0):
                         self.activated_powerups["CannonBall2"].shoot(self)    
             elif self.activated_powerups.get("CannonBall3"):
-                self.activated_powerups["CannonBall3"].shoot()
+                proyectiles = [b for b in self.balls if b.proyectile]
+                if input_data.pressed and self.paddle.cannon:
+                    if(len(proyectiles) == 0):
+                        self.activated_powerups["CannonBall3"].shoot(self)
 
                 
         elif input_id == "pause" and input_data.pressed:

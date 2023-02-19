@@ -95,7 +95,7 @@ class PlayState(BaseState):
             if brick is None:
                 continue
             else:
-                if ball.vx == 0 and ball.vy == -250:
+                if ball.vx == 0 and (ball.vy == -250 or ball.vy == -100):
                     if ball.collides(brick):
                         ball.in_play = False
             brick.hit()
@@ -144,7 +144,7 @@ class PlayState(BaseState):
                         )
                     )
                 # Chance to generate a pair of cannons
-                elif random.random() < 0.5 and not self.find_activated_powerups(list_names) and not self.find_activated_powerups("CannonBall1"):
+                elif random.random() < 0.1 and not self.find_activated_powerups(list_names) and not self.find_activated_powerups("CannonBall1"):
                     self.powerups.append(
                         self.powerups_abstract_factory.get_factory("CannonBall2").create(
                             r.centerx - 8, r.centery - 8

@@ -45,7 +45,7 @@ class CannonBall3(PowerUp):
         for _ in range(2):
             b = self.ball_factory.create(play_state.paddle.x, play_state.paddle.y - 8)
             b.vx = 0
-            b.vy = -20
+            b.vy = -100
             b.proyectile = True
             self.projectiles.append(b)
             

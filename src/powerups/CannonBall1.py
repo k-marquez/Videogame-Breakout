@@ -27,7 +27,7 @@ class CannonBall1(PowerUp):
     """
 
     def __init__(self, x: int, y: int) -> None:
-        super().__init__(x, y, 6)
+        super().__init__(x, y, 5)
         self.activate = False
         self.shoots = 1
         self.ball_factory = Factory(Ball)

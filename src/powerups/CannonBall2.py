@@ -29,7 +29,7 @@ class CannonBall2(PowerUp):
     def __init__(self, x: int, y: int) -> None:
         super().__init__(x, y, 6)
         self.activate = False
-        self.lifetime = 800
+        self.lifetime = 600
         self.ball_factory = Factory(Ball)
         self.texture_cannons = settings.TEXTURES["cannons"]
         self.frames_cannons = settings.FRAMES["cannons"]
@@ -43,6 +43,16 @@ class CannonBall2(PowerUp):
             b = self.ball_factory.create(paddle.x, paddle.y - 8)
             b.vx = 0
             b.vy = -250
+            b.proyectile = True
+            play_state.projectiles.append(b)
+    
+    def recharge(self, play_state: TypeVar("PlayState")) -> None:
+        for _ in range(2):
+            b = self.ball_factory.create(play_state.paddle.x, play_state.paddle.y - 8)
+            b.vx = 0
+            b.vy = -250
+            b.proyectile = True
+            print(f"recargando bala: {b.vy}")
             play_state.projectiles.append(b)
 
     def is_active(self) -> bool:

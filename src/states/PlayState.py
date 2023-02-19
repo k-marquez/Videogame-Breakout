@@ -143,7 +143,7 @@ class PlayState(BaseState):
                         )
                     )
                 # Chance to generate a pair of cannons
-                elif random.random() < 0.80 and not self.find_activated_powerups(list_names) and not self.find_activated_powerups("CannonBall2"):
+                elif random.random() < 0.0 and not self.find_activated_powerups(list_names) and not self.find_activated_powerups("CannonBall2"):
                     self.powerups.append(
                         self.powerups_abstract_factory.get_factory("CannonBall1").create(
                             r.centerx - 8, r.centery - 8
@@ -262,7 +262,7 @@ class PlayState(BaseState):
                 5,
                 (255, 255, 255),
             )
-        if self.paddle.cannon:
+        if self.paddle.cannon and self.find_activated_powerups(["CannonBall1"]):
             render_text(
                 surface,
                 f"Shoots: {self.time}",
@@ -271,13 +271,21 @@ class PlayState(BaseState):
                 5,
                 (255, 255, 255),
             )
+        if self.paddle.cannon and self.find_activated_powerups(["CannonBall2", "CannonBall3"]):
+            render_text(
+                surface,
+                f"Powerup: {self.time/100}",
+                settings.FONTS["tiny"],
+                settings.VIRTUAL_WIDTH - 200,
+                5,
+                (255, 255, 255),
+            )
 
         self.brickset.render(surface)
 
         for powerup in self.activated_powerups.values():
-            if type(powerup).__name__ != "CatchBall":
-                powerup.render_powerup(surface, self)
-            if type(powerup).__name__ == "CannonBall2":
+            class_type = type(powerup).__name__
+            if  class_type != "CatchBall" and class_type != "ConfettiBall":
                 powerup.render_powerup(surface, self)
 
         self.paddle.render(surface)
@@ -319,7 +327,9 @@ class PlayState(BaseState):
             if self.activated_powerups.get("CannonBall1"):
                 self.activated_powerups["CannonBall1"].shoot()
             elif self.activated_powerups.get("CannonBall2"):
-                self.activated_powerups["CannonBall2"].shoot()
+                proyectiles = [b for b in self.balls if b.proyectile]
+                if(len(proyectiles) == 0):
+                    self.activated_powerups["CannonBall2"].recharge(self)    
             elif self.activated_powerups.get("CannonBall3"):
                 self.activated_powerups["CannonBall3"].shoot()
 

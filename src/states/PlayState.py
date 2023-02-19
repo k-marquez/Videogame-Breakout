@@ -69,7 +69,7 @@ class PlayState(BaseState):
                 ball.release()
                 self.balls.append(ball)
                 self.catched_balls.remove(ball)                
-        
+
         for ball in self.balls:
             ball.update(dt)
             ball.solve_world_boundaries()
@@ -137,14 +137,14 @@ class PlayState(BaseState):
                         )
                     )
                 # Chance to generate a pair of cannons
-                elif random.random() < 0.0 and not self.find_activated_powerups(list_names) and not self.find_activated_powerups("CannonBall2") and not self.find_activated_powerups("CannonBall3"):
+                elif random.random() < 0.0 and not self.find_activated_powerups(list_names) and not self.find_activated_powerups("CannonBall2"):
                     self.powerups.append(
                         self.powerups_abstract_factory.get_factory("CannonBall1").create(
                             r.centerx - 8, r.centery - 8
                         )
                     )
                 # Chance to generate a pair of cannons
-                elif random.random() < 0.0 and not self.find_activated_powerups(list_names) and not self.find_activated_powerups("CannonBall1") and not self.find_activated_powerups("CannonBall3"):
+                elif random.random() < 0.5 and not self.find_activated_powerups(list_names) and not self.find_activated_powerups("CannonBall1"):
                     self.powerups.append(
                         self.powerups_abstract_factory.get_factory("CannonBall2").create(
                             r.centerx - 8, r.centery - 8
@@ -340,7 +340,7 @@ class PlayState(BaseState):
                 self.catched_balls = []
         elif input_id == "f":
             if self.activated_powerups.get("CannonBall1"):
-                self.activated_powerups["CannonBall1"].shoot()
+                self.activated_powerups["CannonBall1"].shoot(self)
             elif self.activated_powerups.get("CannonBall2"):
                 proyectiles = [b for b in self.balls if b.proyectile]
                 if input_data.pressed and self.paddle.cannon:

@@ -124,6 +124,7 @@ class PlayState(BaseState):
                 )
                 self.paddle.inc_size()
 
+            list_names = ["CannonBall1", "CannonBall2", "CannonBall3"]
             # Change to generate a powerup
             if random.random() < 0.75:
                 r = brick.get_collision_rect()
@@ -135,28 +136,28 @@ class PlayState(BaseState):
                         )
                     )
                 # Chance to generate a sticky paddle
-                elif random.random() < 0.0 and not self.find_activated_powerups("CatchBall"):
+                elif random.random() < 0.0 and not self.find_activated_powerups(["CatchBall"]):
                     self.powerups.append(
                         self.powerups_abstract_factory.get_factory("CatchBall").create(
                             r.centerx - 8, r.centery - 8
                         )
                     )
                 # Chance to generate a pair of cannons
-                elif random.random() < 0.80 and not self.find_activated_powerups("CatchBall") and not self.find_activated_powerups("CannonBall2"):
+                elif random.random() < 0.80 and not self.find_activated_powerups(list_names) and not self.find_activated_powerups("CannonBall2"):
                     self.powerups.append(
                         self.powerups_abstract_factory.get_factory("CannonBall1").create(
                             r.centerx - 8, r.centery - 8
                         )
                     )
                 # Chance to generate a pair of cannons
-                elif random.random() < 0.80 and not self.find_activated_powerups("CatchBall") and not self.find_activated_powerups("CannonBall1"):
+                elif random.random() < 0.80 and not self.find_activated_powerups(list_names) and not self.find_activated_powerups("CannonBall1"):
                     self.powerups.append(
                         self.powerups_abstract_factory.get_factory("CannonBall2").create(
                             r.centerx - 8, r.centery - 8
                         )
                     )
                 # Chance to generate a confetti
-                elif random.random() < 0.0 and not self.find_activated_powerups("ConfettiBall"):
+                elif random.random() < 0.0 and not self.find_activated_powerups(["ConfettiBall"]):
                     self.powerups.append(
                         self.powerups_abstract_factory.get_factory("ConfettiBall").create(
                             r.centerx - 8, r.centery - 8
@@ -290,9 +291,10 @@ class PlayState(BaseState):
         for powerup in self.powerups:
             powerup.render(surface)
 
-    def find_activated_powerups(self, name: str) -> bool:
-        if name in self.activated_powerups:
-            return True
+    def find_activated_powerups(self, list_names: list) -> bool:
+        for name in list_names:
+            if name in self.activated_powerups:
+                return True
 
         return False
     

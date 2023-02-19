@@ -143,14 +143,14 @@ class PlayState(BaseState):
                         )
                     )
                 # Chance to generate a pair of cannons
-                elif random.random() < 0.80 and not self.find_activated_powerups(list_names) and not self.find_activated_powerups("CannonBall2"):
+                elif random.random() < 0.0 and not self.find_activated_powerups(list_names) and not self.find_activated_powerups("CannonBall2"):
                     self.powerups.append(
                         self.powerups_abstract_factory.get_factory("CannonBall1").create(
                             r.centerx - 8, r.centery - 8
                         )
                     )
                 # Chance to generate a pair of cannons
-                elif random.random() < 0.80 and not self.find_activated_powerups(list_names) and not self.find_activated_powerups("CannonBall1"):
+                elif random.random() < 0.0 and not self.find_activated_powerups(list_names) and not self.find_activated_powerups("CannonBall1"):
                     self.powerups.append(
                         self.powerups_abstract_factory.get_factory("CannonBall2").create(
                             r.centerx - 8, r.centery - 8
@@ -160,6 +160,14 @@ class PlayState(BaseState):
                 elif random.random() < 0.0 and not self.find_activated_powerups(["ConfettiBall"]):
                     self.powerups.append(
                         self.powerups_abstract_factory.get_factory("ConfettiBall").create(
+                            r.centerx - 8, r.centery - 8
+                        )
+                    )
+                
+                # Chance to generate a lose live
+                elif random.random() < 0.80 and not self.find_activated_powerups(["LoseLive"]):
+                    self.powerups.append(
+                        self.powerups_abstract_factory.get_factory("LoseLife").create(
                             r.centerx - 8, r.centery - 8
                         )
                     )
@@ -198,6 +206,10 @@ class PlayState(BaseState):
                     self.activated_powerups["CannonBall1"] = powerup
                 if type(powerup).__name__ == "CannonBall2":
                     self.activated_powerups["CannonBall2"] = powerup
+                if type(powerup).__name__ == "LoseLife":
+                    self.lives -= 1
+                    if self.lives == 0:
+                        self.state_machine.change("game_over", score=self.score)
 
         # Update persist powerups
         for powerup in self.activated_powerups.values():

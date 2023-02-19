@@ -32,6 +32,8 @@ class Ball:
         self.vx = 0
         self.vy = 0
 
+        self.proyectile = False
+
         self.texture = settings.TEXTURES["spritesheet"]
         self.frame = random.randint(0, 6)
         self.in_play = True
